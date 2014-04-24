@@ -6,10 +6,10 @@
 div { height: 100px; width: 100px; background: orange; }
 iframe { width: 500px; height: 120px; border: none; }
 		</style>
-		<script type="text/javascript" src="../resources/crossorigin.js"></script>
+		<script type="text/javascript" src="../resources/crossorigin.sub.js"></script>
 		<script type="text/javascript">
 window.onload = function () {
-	var origin = 'http://'+httpHostMain;
+	var origin = 'http://'+httpHostMainNoPort;
 	document.getElementsByTagName('div')[0].ondragstart = function (e) {
 		e.dataTransfer.effectAllowed = 'copy';
 		e.dataTransfer.setData('text','dummy text');
