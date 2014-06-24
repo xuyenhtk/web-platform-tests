@@ -410,8 +410,6 @@ def sync_urls(manifest, updated_files):
 
 
 def sync_local_changes(manifest, local_changes):
-    #If we just refuse to write the manifest in the face of local changes
-    #this can be simplified somewhat
     if local_changes:
         logger.info("Working directory not clean, adding local changes")
     prev_local_changes = manifest.local_changes
@@ -420,12 +418,12 @@ def sync_local_changes(manifest, local_changes):
     for path, status in prev_local_changes.iteritems():
         print status, path, path in local_changes
         if path not in local_changes:
-            #If a path was previously marked as deleted but is now back
-            #we need to readd it to the manifest
+            # If a path was previously marked as deleted but is now back
+            # we need to readd it to the manifest
             if status == "D" and path in all_paths:
                 local_changes[path] = "A"
-            #If a path was previously marked as added but is now
-            #not then we need to remove it from the manifest
+            # If a path was previously marked as added but is now
+            # not then we need to remove it from the manifest
             elif status == "A" and path not in all_paths:
                 local_changes[path] = "D"
 
@@ -483,17 +481,17 @@ def write(manifest, manifest_path):
 
 def update_manifest(repo_path, opts):
     setup_git(repo_path)
-    if not opts.rebuild:
-        manifest = load(opts.path)
+    if not opts["rebuild"]:
+        manifest = load(opts["path"])
     else:
         manifest = Manifest(None)
 
-    if has_local_changes() and not opts.experimental_include_local_changes:
+    if has_local_changes() and not opts["experimental_include_local_changes"]:
         logger.info("Not writing manifest because working directory is not clean.")
     else:
         logger.info("Updating manifest")
         update(manifest)
-        write(manifest, opts.path)
+        write(manifest, opts["path"])
 
 
 def get_parser():
@@ -510,7 +508,7 @@ def get_parser():
 
 def main():
     repo_root = get_repo_root()
-    opts = get_parser().parse_args()
+    opts = vars(get_parser().parse_args())
     update_manifest(repo_root, opts)
 
 if __name__ == "__main__":

@@ -13,6 +13,10 @@ function Manifest(path) {
 
 Manifest.prototype = {
     load: function(loaded_callback) {
+        this.generate(loaded_callback);
+    },
+
+    do_load: function(loaded_callback) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
             if (xhr.readyState !== 4) {
@@ -25,6 +29,21 @@ Manifest.prototype = {
             loaded_callback();
         }.bind(this);
         xhr.open("GET", this.path);
+        xhr.send(null);
+    },
+
+    generate: function(loaded_callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState !== 4) {
+                return;
+            }
+            if (!(xhr.status === 200 || xhr.status === 0)) {
+                throw new Error("Manifest generation failed");
+            }
+            this.do_load(loaded_callback);
+        }.bind(this);
+        xhr.open("POST", "update_manifest.py");
         xhr.send(null);
     },
 
